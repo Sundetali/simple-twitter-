@@ -1,0 +1,21 @@
+{% extends 'blog/base.html' %}
+
+
+{% block content %}
+    {% for post in my_post %}
+        <div class="pt-5">
+            <div class="articles pt-4">
+                <h1 class="d-flex justify-content-between"><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a> <span>{{ post.published_date }}</span></h1>
+                <p><img height="450" width="750" src="{{ post.thumb.url }}" /></p>
+                <p class="">{{ post.text|linebreaksbr }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a class="" href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approved_comments.count }}</a>
+                    <a href="{% url 'post_remove' pk=post.pk %}"  class="btn-remove btn btn-danger">Remove</a>
+                </div>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+
+
+{% endblock %}

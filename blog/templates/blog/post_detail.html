@@ -1,0 +1,55 @@
+{% extends 'blog/base.html' %}
+<style>
+    p{
+        color: #0f121f;
+    }
+</style>
+{% block content %}
+    <div class="article">
+         {% if post.published_date %}
+            <span class="name">
+                {{ post.published_date }}
+            </span>
+        {% else %}
+            <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
+        {% endif %}
+         <h1>{{ post.title }}</h1>
+        <img height="350" width="620" src="{{ post.thumb.url }}" />
+        <p>{{ post.text|linebreaksbr }}</p>
+
+        {% if user.is_authenticated and user == post.author %}
+            <ul>
+                <!--li><a class="btn-remove btn btn-success" href="{% url 'post_edit' pk=post.pk %}">edit</a></li-->
+                <li>
+                    <a class="btn-remove btn btn-danger" href="{% url 'post_remove' pk=post.pk %}">remove</a>
+                </li>
+            </ul>
+
+
+        {% endif %}
+    </div>
+    <hr>
+    <a class="btn btn-success" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
+    <hr>
+        {% for comment in post.comments.all %}
+            {% if user.is_authenticated or comment.approved_comment %}
+            <div class="comments mt-4">
+                <span class="">
+                    {{ comment.created_date }}
+                    <!--{% if not comment.approved_comment %}
+                        <a class="highlight" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a class="highlight" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+                    {% endif %}-->
+                </span>
+                <strong>{{ comment.author }}</strong>
+                <p>{{ comment.text|linebreaks }}</p>
+
+                 {% if user == comment.author %}
+                    <!--a class="highlight" href="{% url 'comment_edit' pk=comment.pk %}"><span class="glyphicon glyphicon-pencil"></span></a-->
+                    <a class="btn btn-danger btn-lg" href="{% url 'comment_remove' pk=comment.pk %}">remove</a>
+                {% endif %}
+                <hr>
+            </div>
+            {% endif %}
+        {% endfor %}
+{% endblock %}
